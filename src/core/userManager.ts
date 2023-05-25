@@ -18,6 +18,11 @@ export default class UserManager {
 
     private initUser(): User {
         var id = localStorage.getItem(this.ublogId)
+
+        if (id == null) {
+            return User.empty();
+        }
+        
         var img = localStorage.getItem(this.ublogImg)
 
         return new User(id!, img!);

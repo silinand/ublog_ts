@@ -1,15 +1,27 @@
-export default class PostEntity
+interface IPostEntity
 {
-    public id: string = "";
-    public userId: string = "";
-    public imageUrl: string = "";
-    public text: string = "";
-    public title: string = "";
-    public creationTime: Date = new Date();
-    public likes: number = 0;
-    public isLiked: boolean = false;
-
-    static empty(): PostEntity {
-        return new PostEntity();
-    }
+    id: string;
+    userId: string;
+    imageUrl: string;
+    text: string;
+    title: string;
+    creationTime: Date;
+    likes: number;
+    isLiked: boolean;
 }
+
+function emptyPost(): IPostEntity {
+    return {
+        id: "",
+        userId: "",
+        imageUrl: "",
+        text: "",
+        title: "",
+        creationTime: new Date(),
+        likes: 0,
+        isLiked: false,
+    };
+}
+
+export { emptyPost };
+export type { IPostEntity };

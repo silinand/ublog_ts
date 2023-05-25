@@ -1,15 +1,26 @@
-export default class UserEntity
-{
-    public id: string = "";
-    public email: string = "";
-    public imageUrl: string = "";
-    public name: string = "";
-    public bio: string = "";
-    public postsCount: number = 0;
-    public followersCount: number = 0;
-    public followingsCount: number = 0;
+interface IUserEntity {
+    id: string;
+    email: string;
+    imageUrl: string;
+    name: string;
+    bio: string;
+    postsCount: number;
+    followersCount: number;
+    followingsCount: number;
+}
 
-    static empty(): UserEntity {
-        return new UserEntity();
+function emptyUser(): IUserEntity {
+    return {
+        id: "",
+        email: "",
+        imageUrl: "",
+        name: "",
+        bio: "",
+        postsCount: 0,
+        followersCount: 0,
+        followingsCount: 0,
     }
 }
+
+export { emptyUser };
+export type { IUserEntity };

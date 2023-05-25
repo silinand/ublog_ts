@@ -1,70 +1,47 @@
-import PostEntity from "./models/PostEntity";
-import UserEntity from "./models/UserEntity";
+import { IPostEntity } from "./models/PostEntity";
+import { IUserEntity } from "./models/UserEntity";
 
 function getPath(url: string): string {
     return "http://localhost:5196/" + url;
 }
 
-/*function modifyHeaders(info: RequestInit) {
-    var token = sessionStorage.getItem("accessToken");
-    token != null ?? info.headers!.add(['Authorization', "Bearer " + token]);
-}*/
+const getFollowerUsers = (id: string) => requestGet<string[]>("users/follower/" + id);
 
-const getUsers = () => request("users");
+const getFollowingUsers = (id: string) => requestGet<string[]>("users/following/" + id);
 
-const getFollowerUsers = (id: string) => request<string[]>("users/follower/" + id);
+const getUser = (id: string) => requestGet<IUserEntity>("users/" + id);
 
-const getFollowingUsers = (id: string) => request<string[]>("users/following/" + id);
+const getPost = (id: string) => requestGet<IPostEntity>("posts/" + id)
 
-const getUser = (id: string) => request<UserEntity>("users/" + id);
-
-const getPost = (id: string) => request<PostEntity>("posts/" + id)
-
-function request<T>(url: string): Promise<T> {
+function requestGet<T>(url: string): Promise<T> {
     return fetch(getPath(url))
-        .then((response) => response.json());
+        .then(response => response.json());
 }
 
 const executeLogin = (username: string, password: string) => {
     var body = {
-        username: username,
-        password: password
+        username,
+        password
     }
 
-    var info = {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: { 'Content-Type': 'application/json; charset=UTF-8' }
-    }
-
-    return fetch(getPath('login'), info)
-        .then((response) => response.json())
-        .catch((error) => console.log(error));
+    return executePost("login", body)
 }
 
 const executeSignup = (username: string, password: string) => {
     var body = {
-        username: username,
-        password: password
+        username,
+        password
     }
 
-    var info = {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: { 'Content-Type': 'application/json; charset=UTF-8' }
-    }
-
-    return fetch(getPath('signup'), info)
-        .then((response) => response.json())
-        .catch((error) => console.log(error));
+    return executePost("signup", body)
 }
 
 const executeUserUpdate = (email: string, name: string, bio: string, image: string) => {
     var body = {
-        email: email,
-        name: name,
-        bio: bio,
-        image: image
+        email,
+        name,
+        bio,
+        image
     }
 
     return executePost('user', body, 'put')
@@ -72,9 +49,9 @@ const executeUserUpdate = (email: string, name: string, bio: string, image: stri
 
 const executePostCreation = (title: string, text: string, image: string) => {
     var body = {
-        title: title,
-        text: text,
-        image: image
+        title,
+        text,
+        image
     }
 
     return executePost('posts', body)
@@ -82,10 +59,10 @@ const executePostCreation = (title: string, text: string, image: string) => {
 
 const executePostModify = (id: string, title: string, text: string, image: string) => {
     var body = {
-        id: id,
-        title: title,
-        text: text,
-        image: image
+        id,
+        title,
+        text,
+        image
     }
 
     return executePost('posts', body, "put")
@@ -93,19 +70,22 @@ const executePostModify = (id: string, title: string, text: string, image: strin
 
 function executePost(url: string, body: any, method: string = 'post') {
     var info = {
-        method: method,
+        method,
         body: JSON.stringify(body),
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json; charset=UTF-8' }
     }
 
-    return fetch(getPath(url))
+    var request = new Request(url, info);
+
+    modifyForAuth(request);
+
+    return fetch(getPath(url), info)
         .then((response) => response.json())
         .catch((error) => console.log(error));
 }
 
-const getPosts = (type: string, id: string): Promise<PostEntity[]> => {
-    return request(get(type, id));
+const getPosts = (type: string, id: string): Promise<IPostEntity[]> => {
+    return requestGet(get(type, id));
 }
 
 function get(type: string, id: string) {
@@ -123,21 +103,28 @@ function get(type: string, id: string) {
 }
 
 function executeLike(id: string, value: boolean) {
-    var info = {
-        method: value ? 'put' : 'delete'
+    request("like/" + id, value ? "put" : "delete");
+}
+
+function request(url: string, method: string = "get") {
+    let info = { method };
+
+    var request = new Request(getPath(url), info);
+
+    modifyForAuth(request);
+
+    fetch(request).catch(console.log);
+}
+
+function modifyForAuth(request: Request) {
+    let token = sessionStorage.getItem("accessToken");
+
+    if (token != undefined) {
+        request.headers.append("Authorization", "Bearer" + token);
     }
-    /*var info = {
-        method: value ? 'put' : 'delete',
-        headers: { 'Authorization': "Bearer " + sessionStorage.getItem("accessToken") }
-    }*/
-
-    //modifyHeaders(info);
-
-    fetch(getPath("like/" + id), info)
-        .catch((error) => console.log(error));
 }
 
 export {
-    getPath, getPosts, getPost, getUsers, getUser, getFollowerUsers, getFollowingUsers,
+    getPath, getPosts, getPost, getUser, getFollowerUsers, getFollowingUsers,
     executeLogin, executeSignup, executeUserUpdate, executePostCreation, executePostModify, executeLike
 };

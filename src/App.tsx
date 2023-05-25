@@ -17,10 +17,9 @@ import UserSettings from './components/users/UserSettings';
 
 import AuthPanel from './components/AuthPanel';
 
-import logo from './logo.svg';
-import './App.css';
 import UserManager from './core/userManager';
 import User from './core/models/User';
+import './App.css';
 
 export default function App() {
   const [user, setUser] = useState(User.empty())

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPost } from '../../core/requestHelper';
-import PostEntity from '../../core/models/PostEntity';
+import { emptyPost} from '../../core/models/PostEntity';
 import Loader from '../Loader'
 import Post from "./Post"
 
 export default function PostViewer() {
     const params = useParams();
-    const [post, setPost] = useState(PostEntity.empty());
+    const [post, setPost] = useState(emptyPost);
     const [isLoaded, setIsLoaded] = useState(false);
 
     function next() {

@@ -1,5 +1,3 @@
-
-
 .myBody {
   min-height: 100px;
   margin: 0;
@@ -45,14 +43,16 @@ a.title:active {
   float: right;
 }
 
-.navbar > a:hover {
+.navbar  a:hover {
   background-color: #ddd;
   color: black;
 }
 
 .footer {
-  padding: 40px;
-  min-height: 50px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
   text-align: center;
   background: #ddd;
   margin-top: 20px;

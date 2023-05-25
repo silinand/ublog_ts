@@ -4,11 +4,11 @@ import PostsArray from '../posts/PostArray'
 import UserHeader from './UserHeader'
 import Loader from '../Loader'
 import { getUser } from "../../core/requestHelper"
-import UserEntity from '../../core/models/UserEntity'
+import { emptyUser} from '../../core/models/UserEntity'
 
 export default function UserPage(props: {id: string}) {
     var params = useParams();
-    const [user, setUser] = useState(UserEntity.empty());
+    const [user, setUser] = useState(emptyUser());
 
     var isMyPage = props.id == params.id;
 
